@@ -19,68 +19,125 @@ class Calculator extends React.Component {
         this.decimal = this.decimal.bind(this)
     }
 
-    componentWillReceiveProps(newProps) {
-        console.log(JSON.stringify(newProps));
-        this.setState({
-            display: newProps.current
-        })
-    }
-
     generateDigits() {
         let dict = {
             'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
             'six': 6, 'seven': 7, 'eight': 8, 'nine': 9
         };
 
-        let digitButtons = []; 
+        let digitButtons = [];
         for (let key in dict) {
-            let digit = dict[key]; 
-            let button = <Digit id={key} number={key} digit={digit} handleClick={(event) => this.handleClick(event, digit)}/>
-            digitButtons.push(button); 
+            let digit = dict[key];
+            let button = <Digit id={key} number={key} digit={digit} handleClick={(event) => this.handleClick(event, digit)} />
+            digitButtons.push(button);
         }
-        
+
         return digitButtons
     }
 
-    handleClick(event, value) {
-        let currentValue = this.props.current; 
-        let newValue = currentValue == 0 ? value.toString() : currentValue + value.toString(); 
+    updateDisplayTo(value) {
+        this.setState({
+            display: value
+        })
+    }
 
-        this.props.updateCurrent(newValue); 
+    handleClick(event, value) {
+        let currentValue = this.props.current == undefined ? 0 : this.props.current;
+        let newValue = currentValue == 0 ? value.toString() : currentValue + value.toString();
+
+        this.props.updateCurrent(newValue);
+        this.updateDisplayTo(newValue);
     }
 
     clear() {
-        this.props.updateTotal(1);
+        this.props.clear();
+        this.updateDisplayTo(0);
     }
 
     divide() {
+        this.pushToLeft()
         this.props.updateOperation('divide');
     }
 
     multiply() {
+        this.pushToLeft()
         this.props.updateOperation('multiply');
     }
 
     subtract() {
+        this.pushToLeft()
         this.props.updateOperation('subtract');
     }
 
     add() {
+        this.pushToLeft()
         this.props.updateOperation('add');
     }
 
+    pushToLeft() {
+        if (this.props.current != undefined) {
+            if (this.props.operation == undefined) {
+                let lastValue = this.props.current;
+                this.props.updateLeft(lastValue);
+                this.props.updateCurrent(undefined);
+            } else {
+                this.equals();
+            }
+        }
+    }
+
     equals() {
-        this.props.updateTotal(1);
+        // exit early if no left value
+        if (this.props.left == undefined) {
+            return;
+        }
+
+        let right = 0;
+
+        if (this.props.current != undefined) {
+            // save 'right' for consecutive equals
+            this.props.updateRight(this.props.current);
+            right = Number(this.props.current);
+        } else {
+            right = Number(this.props.right);
+        }
+
+        let left = Number(this.props.left);
+        let operation = this.props.operation;
+        let result = this.performOperation(operation, left, right);
+
+        this.props.updateLeft(result);
+        this.props.updateCurrent(undefined);
+
+        // this prevents us from using equals consecutively, but is necessary to pass the tests
+        this.props.updateOperation(undefined);
+
+        this.updateDisplayTo(result);
     }
 
     decimal() {
-        console.log(1)
+        let current = this.props.current; 
+        if (current != undefined && current.indexOf('.') < 0) {
+            let newCurrent = current + '.';
+            this.props.updateCurrent(newCurrent);
+            this.updateDisplayTo(newCurrent);
+        }
+    }
+
+    performOperation(operation, left, right) {
+        switch (operation) {
+            case 'add': return left + right;
+            case 'subtract': return left - right;
+            case 'multiply': return left * right;
+            case 'divide': return left / right;
+            default: return left;
+        }
     }
 
     render() {
         return (
             <div className="calculator">
-                <p>React Calculator</p>
+                <p>React & Redux Calculator</p>
                 <div className="button-grid">
                     <div id="display">{this.state.display}</div>
                     {this.generateDigits()}

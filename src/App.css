@@ -97,6 +97,7 @@
   padding: 15px;
   text-align: right; 
   grid-area: display;
+  font-size: 29pt; 
 }
 
 #clear {

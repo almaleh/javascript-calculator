@@ -2,31 +2,20 @@ import { createStore, combineReducers } from 'redux';
 
 // Redux
 
-
-const UPDATE_DISPLAY = 'UPDATE_DISPLAY';
 const UPDATE_CURRENT = 'UPDATE_CURRENT';
 const UPDATE_LEFT = 'UPDATE_LEFT';
 const UPDATE_RIGHT = 'UPDATE_RIGHT';
-const UPDATE_TOTAL = 'UPDATE_TOTAL';
 const UPDATE_OPERATION = 'UPDATE_OPERATION';
+const CLEAR = 'CLEAR';
 const defaultState = {
-    display: 0,
     current: 0,
-    left: 0,
-    right: 0,
-    total: 0,
+    left: undefined,
+    right: undefined,
     operation: undefined
 }
 
 const reducer = (state = defaultState, action) => {
-    // console.log(JSON.stringify(state));
     switch (action.type) {
-        case UPDATE_DISPLAY:
-        {
-            let newState = { display: action.display }
-            let mergedState = Object.assign({}, state, newState)
-            return mergedState;
-        }
         case UPDATE_CURRENT:
         {
             let newState = { current: action.current }
@@ -45,17 +34,15 @@ const reducer = (state = defaultState, action) => {
             let mergedState = Object.assign({}, state, newState)
             return mergedState;
         }
-        case UPDATE_TOTAL:
-        {
-            let newState = { total: action.total }
-            let mergedState = Object.assign({}, state, newState)
-            return mergedState;
-        }
         case UPDATE_OPERATION:
         {
             let newState = { operation: action.operation }
             let mergedState = Object.assign({}, state, newState)
             return mergedState;
+        }
+        case CLEAR:
+        {
+            return defaultState;
         }
         default: return state;
     }
@@ -67,13 +54,6 @@ const rootReducer = combineReducers({
 })
 
 const store = createStore(rootReducer);
-
-const updateDisplay = (display) => {
-    return {
-        type: UPDATE_DISPLAY,
-        display
-    }
-}
 
 const updateCurrent = (current) => {
     return {
@@ -96,13 +76,6 @@ const updateRight = (right) => {
     }
 }
 
-const updateTotal = (total) => {
-    return {
-        type: UPDATE_TOTAL,
-        total
-    }
-}
-
 const updateOperation = (operation) => {
     return {
         type: UPDATE_OPERATION,
@@ -110,24 +83,25 @@ const updateOperation = (operation) => {
     }
 }
 
+const clear = () => {
+    return {
+        type: CLEAR,
+    }
+}
+
 // React-Redux
 
 const mapStateToProps = (state) => {
     return {
-        display: state.reducer.display,
         current: state.reducer.current,
         left: state.reducer.left,
         right: state.reducer.right,
-        total: state.reducer.total,
         operation: state.reducer.operation
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateDisplay: (newDisplay) => {
-            dispatch(updateDisplay(newDisplay));
-        },
         updateCurrent: (newCurrent) => {
             dispatch(updateCurrent(newCurrent));
         },
@@ -137,11 +111,11 @@ const mapDispatchToProps = (dispatch) => {
         updateRight: (newRight) => {
             dispatch(updateRight(newRight));
         },
-        updateTotal: (newTotal) => {
-            dispatch(updateTotal(newTotal));
-        },
         updateOperation: (newOperation) => {
             dispatch(updateOperation(newOperation));
+        },
+        clear: () => {
+            dispatch(clear());
         }
     }
 }
