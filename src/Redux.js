@@ -1,35 +1,70 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 
 // Redux
 
-const UPDATE = 'UPDATE';
 
-const reducer = (state = 0, action) => {
+const UPDATE_DISPLAY = 'UPDATE_DISPLAY';
+const UPDATE_TOTAL = 'UPDATE_TOTAL'
+
+const displayReducer = (state = {}, action) => {
+    // console.log(JSON.stringify(state));
     switch (action.type) {
-        case UPDATE: return action.newState;
+        case UPDATE_DISPLAY:
+            let newState = { display: action.display }
+            let mergedState = Object.assign({}, state, newState)
+            return mergedState;
         default: return state;
     }
 }
 
-const store = createStore(reducer);
+const totalReducer = (state = {}, action) => {
+    // console.log(JSON.stringify(state));
+    switch (action.type) {
+        case UPDATE_TOTAL: 
+            let newState = { total: action.total }
+            let mergedState = Object.assign({}, state, newState)
+            return mergedState;
+        default: return state;
+    }
+}
 
-const updateState = (newState) => {
+const rootReducer = combineReducers({
+    displayReducer, 
+    totalReducer
+})
+
+const store = createStore(rootReducer);
+
+const updateDisplay = (display) => {
     return {
-        type: UPDATE,
-        newState
+        type: UPDATE_DISPLAY,
+        display
+    }
+}
+
+const updateTotal = (total) => {
+    return {
+        type: UPDATE_TOTAL, 
+        total
     }
 }
 
 // React-Redux
 
 const mapStateToProps = (state) => {
-    return { currentState: state };
+    return { 
+        display: state.displayReducer.display,
+        total: state.totalReducer.total
+     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateState: (newState) => {
-            dispatch(updateState(newState));
+        updateDisplay: (newDisplay) => {
+            dispatch(updateDisplay(newDisplay));
+        }, 
+        updateTotal: (newTotal) => {
+            dispatch(updateTotal(newTotal)); 
         }
     }
 }

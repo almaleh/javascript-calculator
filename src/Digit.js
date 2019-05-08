@@ -7,9 +7,11 @@ class Digit extends React.Component {
     // TODO assign ID based on number
     render() {
         let number = this.props.number; 
+        let digit = this.props.digit; 
+        let handleClick = this.props.handleClick; 
         return (
-            <button className="button" id={`digit-${number}`}>
-                {number}
+            <button className="button light-gray" id={number} onClick={handleClick}>
+                {digit}
             </button>
         )
     }

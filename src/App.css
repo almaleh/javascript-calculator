@@ -14,7 +14,7 @@
 }
 
 .button-grid {
-  background: blue; 
+  background: rgb(104, 104, 104); 
   display: grid; 
   grid-template-rows: repeat(6, 80px); 
   grid-template-columns: repeat(4, 80px);
@@ -28,51 +28,68 @@
 }
 
 .button {
-  background: red; 
   display: flex; 
   justify-content: center; 
   align-items: center; 
-  color: white; 
   font-size: 22pt; 
+  border: 0.5px solid black; 
 }
 
-#digit-0 {
+.button:hover {
+  filter: brightness(1.1);
+}
+
+.button:active {
+  opacity: 0.7;
+}
+
+.light-gray {
+  background: lightgray;
+  color: rgb(34, 34, 34); 
+}
+
+.orange {
+  background: orange;
+  color: white; 
+}
+
+#zero {
   grid-area: zero; 
 }
 
-#digit-1 {
+#one {
   grid-area: one; 
 }
 
-#digit-2 {
+#two {
   grid-area: two; 
 }
 
-#digit-3 {
+#three {
   grid-area: three; 
 }
 
-#digit-4 {
+#four {
   grid-area: four; 
 }
 
-#digit-5 {
+#five {
   grid-area: five; 
 }
 
-#digit-6 {
+#six {
   grid-area: six; 
 }
 
-#digit-7 {
+#seven {
   grid-area: seven; 
 }
 
-#digit-8 {
+#eight {
   grid-area: eight; 
 }
 
-#digit-9 {
+#nine {
   grid-area: nine; 
 }
 
@@ -82,30 +99,30 @@
   grid-area: display;
 }
 
-#AC {
+#clear {
   grid-area: AC;
 }
 
-#division {
+#divide {
   grid-area: division;
 }
 
-#multiplication {
+#multiply {
   grid-area: multiplication;
 }
 
-#minus {
+#subtract {
   grid-area: minus;
 }
 
-#plus {
+#add {
   grid-area: plus;
 }
 
-#equal {
+#equals {
   grid-area: equal;
 }
 
-#dot {
+#decimal {
   grid-area: dot;
 }

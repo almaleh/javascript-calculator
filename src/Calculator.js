@@ -6,48 +6,92 @@ import Digit from './Digit';
 class Calculator extends React.Component {
     constructor(props) {
         super(props);
-        this.handleClick = this.handleClick.bind(this);
         this.state = {
             display: 0
         }
-    }
-
-    handleClick(event) {
-        let current = this.props.currentState;
-        console.log(current);
-        this.props.updateState(current + 1);
+        this.handleClick = this.handleClick.bind(this);
+        this.clear = this.clear.bind(this)
+        this.divide = this.divide.bind(this)
+        this.multiply = this.multiply.bind(this)
+        this.subtract = this.subtract.bind(this)
+        this.add = this.add.bind(this)
+        this.equals = this.equals.bind(this)
+        this.decimal = this.decimal.bind(this)
     }
 
     componentWillReceiveProps(newProps) {
+        console.log(JSON.stringify(newProps));
         this.setState({
-            display: newProps.currentState
+            display: newProps.display
         })
     }
 
     generateDigits() {
-        let digits = [...Array(10).keys()];
-        let digitButtons = digits.map((digit, index) => {
-            return (
-                <Digit id={index} number={digit} />
-            )
-        })
+        let dict = {
+            'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+            'six': 6, 'seven': 7, 'eight': 8, 'nine': 9
+        };
+
+        let digitButtons = []; 
+        for (let key in dict) {
+            let digit = dict[key]; 
+            let button = <Digit id={key} number={key} digit={digit} handleClick={(event) => this.handleClick(event, digit)}/>
+            digitButtons.push(button); 
+        }
+        
         return digitButtons
+    }
+
+    handleClick(event, value) {
+        console.log(value);
+        // for (let arg of arguments) {
+        //     console.log(arg);
+        this.props.updateDisplay(value);
+    }
+
+    clear() {
+        console.log(1)
+        this.props.updateTotal(1);
+    }
+
+    divide() {
+        this.props.updateTotal(1);
+    }
+
+    multiply() {
+        this.props.updateTotal(1);
+    }
+
+    subtract() {
+        this.props.updateTotal(1);
+    }
+
+    add() {
+        this.props.updateTotal(1);
+    }
+
+    equals() {
+        this.props.updateTotal(1);
+    }
+
+    decimal() {
+        console.log(1)
     }
 
     render() {
         return (
             <div className="calculator">
-                <p onClick={this.handleClick}>This is a calc test</p>
+                <p>React Calculator</p>
                 <div className="button-grid">
                     <div id="display">{this.state.display}</div>
                     {this.generateDigits()}
-                    <button className="button" id="AC">AC</button>
-                    <button className="button" id="division">/</button>
-                    <button className="button" id="multiplication">X</button>
-                    <button className="button" id="minus">-</button>
-                    <button className="button" id="plus">+</button>
-                    <button className="button" id="equal">=</button>
-                    <button className="button" id="dot">.</button>
+                    <button className="button light-gray" id="clear" onClick={this.clear}>AC</button>
+                    <button className="button light-gray" id="divide" onClick={this.divide}>/</button>
+                    <button className="button orange" id="multiply" onClick={this.multiply}>X</button>
+                    <button className="button orange" id="subtract" onClick={this.subtract}>-</button>
+                    <button className="button orange" id="add" onClick={this.add}>+</button>
+                    <button className="button orange" id="equals" onClick={this.equals}>=</button>
+                    <button className="button light-gray" id="decimal" onClick={this.decimal}>.</button>
                 </div>
             </div>
         )
