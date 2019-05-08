@@ -22,7 +22,7 @@ class Calculator extends React.Component {
     componentWillReceiveProps(newProps) {
         console.log(JSON.stringify(newProps));
         this.setState({
-            display: newProps.display
+            display: newProps.current
         })
     }
 
@@ -43,31 +43,30 @@ class Calculator extends React.Component {
     }
 
     handleClick(event, value) {
-        console.log(value);
-        // for (let arg of arguments) {
-        //     console.log(arg);
-        this.props.updateDisplay(value);
+        let currentValue = this.props.current; 
+        let newValue = currentValue == 0 ? value.toString() : currentValue + value.toString(); 
+
+        this.props.updateCurrent(newValue); 
     }
 
     clear() {
-        console.log(1)
         this.props.updateTotal(1);
     }
 
     divide() {
-        this.props.updateTotal(1);
+        this.props.updateOperation('divide');
     }
 
     multiply() {
-        this.props.updateTotal(1);
+        this.props.updateOperation('multiply');
     }
 
     subtract() {
-        this.props.updateTotal(1);
+        this.props.updateOperation('subtract');
     }
 
     add() {
-        this.props.updateTotal(1);
+        this.props.updateOperation('add');
     }
 
     equals() {
