@@ -7,7 +7,8 @@ class Calculator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            display: 0
+            display: 0,
+            lastOperation: undefined
         }
         this.handleClick = this.handleClick.bind(this);
         this.clear = this.clear.bind(this)
@@ -17,6 +18,10 @@ class Calculator extends React.Component {
         this.add = this.add.bind(this)
         this.equals = this.equals.bind(this)
         this.decimal = this.decimal.bind(this)
+    }
+
+    componentWillReceiveProps(props) {
+        console.log(JSON.stringify(props));
     }
 
     generateDigits() {
@@ -42,7 +47,7 @@ class Calculator extends React.Component {
     }
 
     handleClick(event, value) {
-        let currentValue = this.props.current == undefined ? 0 : this.props.current;
+        let currentValue = this.props.current === undefined ? 0 : this.props.current;
         let newValue = currentValue == 0 ? value.toString() : currentValue + value.toString();
 
         this.props.updateCurrent(newValue);
@@ -75,7 +80,7 @@ class Calculator extends React.Component {
     }
 
     pushToLeft() {
-        if (this.props.current != undefined) {
+        if (this.props.current !== undefined) {
             if (this.props.operation == undefined) {
                 let lastValue = this.props.current;
                 this.props.updateLeft(lastValue);
@@ -94,30 +99,38 @@ class Calculator extends React.Component {
 
         let right = 0;
 
-        if (this.props.current != undefined) {
+        if (this.props.current === undefined) {
+            right = Number(this.props.right);
+        } else {
             // save 'right' for consecutive equals
             this.props.updateRight(this.props.current);
             right = Number(this.props.current);
-        } else {
-            right = Number(this.props.right);
         }
 
         let left = Number(this.props.left);
+
+
         let operation = this.props.operation;
+        if (operation === undefined) {
+            operation = this.state.lastOperation;
+        }
+        
         let result = this.performOperation(operation, left, right);
 
         this.props.updateLeft(result);
         this.props.updateCurrent(undefined);
 
-        // this prevents us from using equals consecutively, but is necessary to pass the tests
         this.props.updateOperation(undefined);
-
+        this.setState({
+            lastOperation: operation
+        })
+        
         this.updateDisplayTo(result);
     }
 
     decimal() {
         let current = this.props.current; 
-        if (current != undefined && current.indexOf('.') < 0) {
+        if (current !== undefined && current.indexOf('.') < 0) {
             let newCurrent = current + '.';
             this.props.updateCurrent(newCurrent);
             this.updateDisplayTo(newCurrent);
